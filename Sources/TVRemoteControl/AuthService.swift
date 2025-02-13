@@ -1,7 +1,7 @@
 import Foundation
 
 public struct VerifyResult {
-    let token: String
+    public let token: String
 }
 
 final class AuthService {

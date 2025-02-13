@@ -8,10 +8,10 @@ public struct App: Decodable {
         self.isInstalled = isInstalled
     }
     
-    let appId: String
-    let name: String
-    let iconArtSmallUri: String
-    let isInstalled: Bool
+    public let appId: String
+    public let name: String
+    public let iconArtSmallUri: String
+    public let isInstalled: Bool
 }
 
 final class AppService {

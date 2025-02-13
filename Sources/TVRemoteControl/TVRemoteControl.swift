@@ -6,8 +6,8 @@ public struct FireStick: Hashable, Codable {
         self.ip = ip
     }
     
-    let name: String
-    let ip: String
+    public let name: String
+    public let ip: String
 }
 
 public struct FireStickInformation {
@@ -15,7 +15,7 @@ public struct FireStickInformation {
         self.friendlyName = friendlyName
     }
     
-    let friendlyName: String
+    public let friendlyName: String
 }
 
 public class FireStickParser: NSObject, XMLParserDelegate {
