@@ -1,11 +1,11 @@
 import Foundation
 
-public enum LGTVPairingType: String, Codable {
+public enum RemoteControlPairingType: String, Codable {
     case pin = "PIN"
     case prompt = "PROMPT"
 }
 
-public enum LGTVRequestType: String {
+public enum RemoteControlRequestType: String {
     case register
     case request
     case subscribe
@@ -13,7 +13,7 @@ public enum LGTVRequestType: String {
     case unknown
 }
 
-public enum LGTVResponseType: String {
+public enum RemoteControlResponseType: String {
     case response
     case registered
     case error

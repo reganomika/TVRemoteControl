@@ -1,8 +1,8 @@
 import Foundation
 
-public enum LGTVTarget {
+public enum RemoteControlTarget {
 
-    case register(pairingType: LGTVPairingType = .prompt, clientKey: String? = nil)
+    case register(pairingType: RemoteControlPairingType = .prompt, clientKey: String? = nil)
 
     case setPin(_ pin: String)
 
@@ -41,17 +41,17 @@ public enum LGTVTarget {
     case setSource(_ inputId: String)
 }
 
-public protocol LGTVKeyTargetProtocol {
+public protocol RemoteControlKeyTargetProtocol {
     var name: String { get }
     var request: Data? { get }
 }
 
-public protocol LGTVTargetProtocol {
+public protocol RemoteControlTargetProtocol {
     var uri: String? { get }
-    var request: LGTVRequest { get }
+    var request: RemoteControlRequest { get }
 }
 
-public enum LGTVKeyTarget: LGTVKeyTargetProtocol {
+public enum RemoteControlKeyTarget: RemoteControlKeyTargetProtocol {
 
     case move(dx: Int, dy: Int, down: Int = 0)
     
@@ -86,7 +86,7 @@ public enum LGTVKeyTarget: LGTVKeyTargetProtocol {
     case channelDown
 }
 
-extension LGTVTarget: LGTVTargetProtocol {
+extension RemoteControlTarget: RemoteControlTargetProtocol {
     public var uri: String? {
         switch self {
         case .setPin:
@@ -130,18 +130,18 @@ extension LGTVTarget: LGTVTargetProtocol {
         }
     }
 
-    public var request: LGTVRequest {
+    public var request: RemoteControlRequest {
         switch self {
         case .register(let pairingType, let clientKey):
-            let payload = LGTVRequestPayload(
+            let payload = RemoteControlRequestPayload(
                 forcePairing: false,
-                manifest: LGTVRequestManifest(),
+                manifest: RemoteControlRequestManifest(),
                 pairingType: pairingType.rawValue,
                 clientKey: clientKey
             )
             return .init(type: .register, payload: payload)
         case .setPin(let pin):
-            let payload = LGTVRequestPayload(pin: pin)
+            let payload = RemoteControlRequestPayload(pin: pin)
             return .init(type: .request, uri: uri, payload: payload)
         case
             .getVolume(let subscribe):
@@ -150,22 +150,22 @@ extension LGTVTarget: LGTVTargetProtocol {
             }
             return .init(type: .request, uri: uri)
         case .setVolume(let volume):
-            let payload = LGTVRequestPayload(volume: volume)
+            let payload = RemoteControlRequestPayload(volume: volume)
             return .init(type: .request, uri: uri, payload: payload)
         case .setMute(let mute):
-            let payload = LGTVRequestPayload(mute: mute)
+            let payload = RemoteControlRequestPayload(mute: mute)
             return .init(type: .request, uri: uri, payload: payload)
         case .screenOn, .screenOff:
-            let payload = LGTVRequestPayload(standbyMode: "active")
+            let payload = RemoteControlRequestPayload(standbyMode: "active")
             return .init(type: .request, uri: uri, payload: payload)
         case .launchApp(let appId, let contentId, let params):
-            let payload = LGTVRequestPayload(id: appId, contentId: contentId, params: params)
+            let payload = RemoteControlRequestPayload(id: appId, contentId: contentId, params: params)
             return .init(type: .request, uri: uri, payload: payload)
         case .closeApp(let appId, let sessionId):
-            let payload = LGTVRequestPayload(id: appId, sessionId: sessionId)
+            let payload = RemoteControlRequestPayload(id: appId, sessionId: sessionId)
             return .init(type: .request, uri: uri, payload: payload)
         case .setSource(let inputId):
-            let payload = LGTVRequestPayload(inputId: inputId)
+            let payload = RemoteControlRequestPayload(inputId: inputId)
             return .init(type: .request, uri: uri, payload: payload)
         default:
             return .init(type: .request, uri: uri)
@@ -173,7 +173,7 @@ extension LGTVTarget: LGTVTargetProtocol {
     }
 }
 
-public extension LGTVKeyTarget {
+public extension RemoteControlKeyTarget {
     var name: String {
         return String(describing: self).uppercased()
     }

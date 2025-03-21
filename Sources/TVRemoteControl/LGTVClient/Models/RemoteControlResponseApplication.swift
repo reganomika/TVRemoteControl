@@ -1,6 +1,6 @@
 import Foundation
 
-public  struct LGTVResponseApplication: Codable, Identifiable {
+public  struct RemoteControlResponseApplication: Codable, Identifiable {
     public init(id: String? = nil, title: String? = nil, systemApp: Bool? = nil) {
         self.id = id
         self.title = title

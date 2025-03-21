@@ -1,9 +1,9 @@
 import Foundation
 
-public struct LGTVRequestPayload: Codable {
+public struct RemoteControlRequestPayload: Codable {
     public var pin: String?
     public var forcePairing: Bool?
-    public var manifest: LGTVRequestManifest?
+    public var manifest: RemoteControlRequestManifest?
     public var pairingType: String?
     public var clientKey: String?
     public var message: String?
@@ -27,7 +27,7 @@ public struct LGTVRequestPayload: Codable {
     public init(
         pin: String? = nil,
         forcePairing: Bool? = nil,
-        manifest: LGTVRequestManifest? = nil,
+        manifest: RemoteControlRequestManifest? = nil,
         pairingType: String? = nil,
         clientKey: String? = nil,
         message: String? = nil,

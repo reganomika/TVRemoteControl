@@ -1,30 +1,30 @@
 import Foundation
 
-public class LGTVClient: NSObject, LGTVClientProtocol, @unchecked Sendable {
+public class RemoteControlClient: NSObject, RemoteControlClientProtocol, @unchecked Sendable {
     private var url: URL
     private var urlSession: URLSession?
     private var primaryWebSocketTask: URLSessionWebSocketTask?
     private var secondaryWebSocketTask: URLSessionWebSocketTask?
     private var pointerRequestId: String?
 
-    public weak var delegate: LGTVClientDelegate?
+    public weak var delegate: RemoteControlClientDelegate?
 
     required public init(
         url: URL,
-        delegate: LGTVClientDelegate? = nil
+        delegate: RemoteControlClientDelegate? = nil
     ) {
         self.url = url
         self.delegate = delegate
         super.init()
     }
 
-    public func connect() {
+    public func startConnection() {
         urlSession = URLSession(configuration: .default, delegate: self, delegateQueue: nil)
         connect(url, task: &primaryWebSocketTask)
     }
 
     @discardableResult
-    public func send(_ target: LGTVTarget, id: String) -> String? {
+    public func makeRequest(_ target: RemoteControlTarget, id: String) -> String? {
         guard let jsonRequest = target.request.jsonWithId(id) else {
             return nil
         }
@@ -38,7 +38,7 @@ public class LGTVClient: NSObject, LGTVClientProtocol, @unchecked Sendable {
         sendURLSessionWebSocketTaskMessage(message, task: primaryWebSocketTask)
     }
 
-    public func sendKey(_ key: LGTVKeyTarget) {
+    public func makeKeyRequest(_ key: RemoteControlKeyTarget) {
         guard let request = key.request else {
             return
         }
@@ -61,7 +61,7 @@ public class LGTVClient: NSObject, LGTVClientProtocol, @unchecked Sendable {
     }
 }
 
-extension LGTVClient {
+extension RemoteControlClient {
     fileprivate func connect(
         _ url: URL,
         task: inout URLSessionWebSocketTask?
@@ -85,7 +85,7 @@ extension LGTVClient {
     }
 
     fileprivate func listen(
-        _ completion: @escaping @Sendable (Result<LGTVResponse, Error>) -> Void
+        _ completion: @escaping @Sendable (Result<RemoteControlResponse, Error>) -> Void
     ) {
         primaryWebSocketTask?.receive { [weak self] result in
             guard let self else {
@@ -100,14 +100,14 @@ extension LGTVClient {
 
     fileprivate func handle(
         _ response: URLSessionWebSocketTask.Message,
-        completion: @escaping (Result<LGTVResponse, Error>) -> Void
+        completion: @escaping (Result<RemoteControlResponse, Error>) -> Void
     ) {
         if case .string(let jsonResponse) = response {
             delegate?.didReceive(jsonResponse: jsonResponse)
         }
         guard let response = response.decode(),
             let type = response.type,
-            let responseType = LGTVResponseType(rawValue: type)
+            let responseType = RemoteControlResponseType(rawValue: type)
         else {
             completion(.failure(NSError(domain: "Unknown error", code: 0, userInfo: nil)))
             return
@@ -118,7 +118,7 @@ extension LGTVClient {
         case .registered:
             if let clientKey = response.payload?.clientKey {
                 delegate?.didRegister(with: clientKey)
-                pointerRequestId = send(.getPointerInputSocket)
+                pointerRequestId = makeRequest(.getPointerInputSocket)
             }
             fallthrough
         default:
@@ -133,7 +133,7 @@ extension LGTVClient {
     }
 }
 
-extension LGTVClient: URLSessionWebSocketDelegate {
+extension RemoteControlClient: URLSessionWebSocketDelegate {
     public func urlSession(
         _ session: URLSession,
         webSocketTask: URLSessionWebSocketTask,

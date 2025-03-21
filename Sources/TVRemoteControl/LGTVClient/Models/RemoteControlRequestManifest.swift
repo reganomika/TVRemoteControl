@@ -1,6 +1,6 @@
 import Foundation
 
-public struct LGTVRequestManifest: Codable {
+public struct RemoteControlRequestManifest: Codable {
     public init(appVersion: String = "1.1", manifestVersion: Int = 1, permissions: [String] = [
         "LAUNCH",
         "LAUNCH_WEBAPP",
@@ -52,7 +52,7 @@ public struct LGTVRequestManifest: Codable {
         "SCAN_TV_CHANNELS", 
         "CONTROL_TV_POWER",
         "CONTROL_WOL",
-    ], signatures: [LGTVRequestSignature] = [LGTVRequestSignature()], signed: LGTVRequestSigned = LGTVRequestSigned()) {
+    ], signatures: [RemoteControlRequestSignature] = [RemoteControlRequestSignature()], signed: RemoteControlRequestSigned = RemoteControlRequestSigned()) {
         self.appVersion = appVersion
         self.manifestVersion = manifestVersion
         self.permissions = permissions
@@ -107,6 +107,6 @@ public struct LGTVRequestManifest: Codable {
         "CONTROL_TV_POWER",
         "CONTROL_WOL",
     ]
-    public var signatures: [LGTVRequestSignature] = [LGTVRequestSignature()]
-    public var signed: LGTVRequestSigned = LGTVRequestSigned()
+    public var signatures: [RemoteControlRequestSignature] = [RemoteControlRequestSignature()]
+    public var signed: RemoteControlRequestSigned = RemoteControlRequestSigned()
 }
