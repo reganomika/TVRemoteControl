@@ -2,25 +2,21 @@ import Foundation
 
 public enum RemoteControlTarget {
 
-    case register(pairingType: RemoteControlPairingType = .prompt, clientKey: String? = nil)
+    case registration(pairingType: RemoteControlPairingType = .prompt, key: String? = nil)
 
-    case setPin(_ pin: String)
+    case pin(_ pin: String)
 
-    case volumeUp
+    case soundValuePlus
 
-    case volumeDown
+    case soundValueMinus
 
-    case getVolume(subscribe: Bool? = nil)
+    case sound(_ subscribe: Bool? = nil)
 
-    case setVolume(_ level: Int)
+    case updateSound(_ level: Int)
 
-    case setMute(_ mute: Bool)
+    case mute(_ mute: Bool)
 
-    case screenOff
-
-    case screenOn
-
-    case turnOff
+    case power
 
     case listApps
 
@@ -28,17 +24,13 @@ public enum RemoteControlTarget {
 
     case closeApp(appId: String, sessionId: String? = nil)
 
-    case sendEnterKey
+    case ok
     
     case getPointerInputSocket
 
-    case channelUp
+    case channelPlus
 
-    case channelDown
-    
-    case listSources
-
-    case setSource(_ inputId: String)
+    case channelMinus
 }
 
 public protocol RemoteControlKeyTargetProtocol {
@@ -89,25 +81,21 @@ public enum RemoteControlKeyTarget: RemoteControlKeyTargetProtocol {
 extension RemoteControlTarget: RemoteControlTargetProtocol {
     public var uri: String? {
         switch self {
-        case .setPin:
+        case .pin:
             return "ssap://pairing/setPin"
-        case .volumeUp:
+        case .soundValuePlus:
             return "ssap://audio/volumeUp"
-        case .volumeDown:
+        case .soundValueMinus:
             return "ssap://audio/volumeDown"
-        case .getVolume:
+        case .sound:
             return "ssap://audio/getVolume"
-        case .setVolume:
+        case .updateSound:
             return "ssap://audio/setVolume"
-        case .setMute:
+        case .mute:
             return "ssap://audio/setMute"
-        case .screenOff:
-            return "ssap://com.webos.service.tvpower/power/turnOffScreen"
-        case .screenOn:
-            return "ssap://com.webos.service.tvpower/power/turnOnScreen"
         case .getPointerInputSocket:
               return "ssap://com.webos.service.networkinput/getPointerInputSocket"
-        case .turnOff:
+        case .power:
             return "ssap://system/turnOff"
         case .listApps:
             return "ssap://com.webos.applicationManager/listApps"
@@ -115,16 +103,12 @@ extension RemoteControlTarget: RemoteControlTargetProtocol {
             return "ssap://system.launcher/launch"
         case .closeApp:
             return "ssap://system.launcher/close"
-        case .sendEnterKey:
+        case .ok:
             return "ssap://com.webos.service.ime/sendEnterKey"
-        case .channelUp:
+        case .channelPlus:
             return "ssap://tv/channelUp"
-        case .channelDown:
+        case .channelMinus:
             return "ssap://tv/channelDown"
-        case .listSources:
-            return "ssap://tv/getExternalInputList"
-        case .setSource:
-            return "ssap://tv/switchInput"
         default:
             return nil
         }
@@ -132,7 +116,7 @@ extension RemoteControlTarget: RemoteControlTargetProtocol {
 
     public var request: RemoteControlRequest {
         switch self {
-        case .register(let pairingType, let clientKey):
+        case .registration(let pairingType, let clientKey):
             let payload = RemoteControlRequestPayload(
                 forcePairing: false,
                 manifest: RemoteControlRequestManifest(),
@@ -140,32 +124,25 @@ extension RemoteControlTarget: RemoteControlTargetProtocol {
                 clientKey: clientKey
             )
             return .init(type: .register, payload: payload)
-        case .setPin(let pin):
+        case .pin(let pin):
             let payload = RemoteControlRequestPayload(pin: pin)
             return .init(type: .request, uri: uri, payload: payload)
-        case
-            .getVolume(let subscribe):
+        case .sound(let subscribe):
             if let subscribe {
                 return .init(type: subscribe ? .subscribe : .unsubscribe, uri: uri)
             }
             return .init(type: .request, uri: uri)
-        case .setVolume(let volume):
+        case .updateSound(let volume):
             let payload = RemoteControlRequestPayload(volume: volume)
             return .init(type: .request, uri: uri, payload: payload)
-        case .setMute(let mute):
+        case .mute(let mute):
             let payload = RemoteControlRequestPayload(mute: mute)
-            return .init(type: .request, uri: uri, payload: payload)
-        case .screenOn, .screenOff:
-            let payload = RemoteControlRequestPayload(standbyMode: "active")
             return .init(type: .request, uri: uri, payload: payload)
         case .launchApp(let appId, let contentId, let params):
             let payload = RemoteControlRequestPayload(id: appId, contentId: contentId, params: params)
             return .init(type: .request, uri: uri, payload: payload)
         case .closeApp(let appId, let sessionId):
             let payload = RemoteControlRequestPayload(id: appId, sessionId: sessionId)
-            return .init(type: .request, uri: uri, payload: payload)
-        case .setSource(let inputId):
-            let payload = RemoteControlRequestPayload(inputId: inputId)
             return .init(type: .request, uri: uri, payload: payload)
         default:
             return .init(type: .request, uri: uri)
