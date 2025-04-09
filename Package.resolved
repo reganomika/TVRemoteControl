@@ -1,0 +1,24 @@
+{
+  "originHash" : "4fc76be594ce712df2b0e3e6ba8600d455cf7f38b87bad359f8a0aff1af4f500",
+  "pins" : [
+    {
+      "identity" : "starscream",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/daltoniam/Starscream.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "c6bfd1af48efcc9a9ad203665db12375ba6b145a"
+      }
+    },
+    {
+      "identity" : "tvcommanderkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/wdesimini/TVCommanderKit",
+      "state" : {
+        "branch" : "main",
+        "revision" : "c92038583e58a4d3d1cba229b13dd39906519686"
+      }
+    }
+  ],
+  "version" : 3
+}
