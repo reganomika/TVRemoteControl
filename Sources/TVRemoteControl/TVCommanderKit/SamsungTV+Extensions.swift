@@ -3,18 +3,18 @@ import Foundation
 // MARK: Data
 
 extension Data {
-    static func magicPacket(from device: TVWakeOnLANDevice) -> Data {
+    public static func magicPacket(from device: TVWakeOnLANDevice) -> Data {
         var magicPacketRaw = [UInt8](repeating: 0xFF, count: 6)
         let macAddressData = device.mac.split(separator: ":").compactMap { UInt8($0, radix: 16) }
         for _ in 0..<16 { magicPacketRaw.append(contentsOf: macAddressData) }
         return Data(magicPacketRaw)
     }
 
-    var asJSON: [String: Any]? {
+    public var asJSON: [String: Any]? {
         try? JSONSerialization.jsonObject(with: self) as? [String: Any]
     }
 
-    var asString: String? {
+    public var asString: String? {
         String(data: self, encoding: .utf8)
     }
 }
@@ -22,11 +22,11 @@ extension Data {
 // MARK: Dictionary
 
 extension Dictionary {
-    var asData: Data? {
+    public var asData: Data? {
         try? JSONSerialization.data(withJSONObject: self)
     }
 
-    var asString: String? {
+    public var asString: String? {
         asData?.asString
     }
 }
@@ -34,7 +34,7 @@ extension Dictionary {
 // MARK: Encodable
 
 extension Encodable {
-    func asString(encoder: JSONEncoder = .init()) throws -> String? {
+    public func asString(encoder: JSONEncoder = .init()) throws -> String? {
         try encoder.encode(self).asString
     }
 }
@@ -42,25 +42,25 @@ extension Encodable {
 // MARK: String
 
 extension String {
-    var isValidAppName: Bool {
+    public var isValidAppName: Bool {
         !isEmpty
     }
 
-    var isValidIPAddress: Bool {
+    public var isValidIPAddress: Bool {
         let regex = #"^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$"#
         let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         return predicate.evaluate(with: self)
     }
 
-    var asBase64: String? {
+    public  var asBase64: String? {
         asData?.base64EncodedString()
     }
 
-    var asData: Data? {
+    public var asData: Data? {
         data(using: .utf8)
     }
 
-    var asJSON: [String: Any]? {
+    public  var asJSON: [String: Any]? {
         asData.flatMap(\.asJSON)
     }
 }
@@ -68,7 +68,7 @@ extension String {
 // MARK: TV
 
 extension TV {
-    var ipAddress: String? {
+    public var ipAddress: String? {
         if let httpURLHost = URLComponents(string: uri)?.host,
            httpURLHost.isValidIPAddress {
             return httpURLHost
@@ -79,7 +79,7 @@ extension TV {
         return nil
     }
 
-    func addingDevice(_ device: TV.Device) -> TV {
+    public func addingDevice(_ device: TV.Device) -> TV {
         TV(
             device: device,
             id: id,
@@ -150,7 +150,7 @@ extension TVApp {
 // MARK: TVConnectionConfiguration
 
 extension TVConnectionConfiguration {
-    func wssURL() -> URL? {
+    public func wssURL() -> URL? {
         var components = URLComponents()
         components.path = path
         components.host = ipAddress
@@ -189,7 +189,7 @@ extension TVKeyboardLayout {
 // MARK: TVRemoteCommand
 
 extension TVRemoteCommand {
-    static func createClickCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
+    public static func createClickCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
         TVRemoteCommand(
             method: .control,
             params: .init(
@@ -201,7 +201,7 @@ extension TVRemoteCommand {
         )
     }
 
-    static func createPressCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
+    public static func createPressCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
         TVRemoteCommand(
             method: .control,
             params: .init(
@@ -213,7 +213,7 @@ extension TVRemoteCommand {
         )
     }
 
-    static func createReleaseCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
+    public static func createReleaseCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
         TVRemoteCommand(
             method: .control,
             params: .init(
@@ -225,7 +225,7 @@ extension TVRemoteCommand {
         )
     }
 
-    static func createTextInputCommand(_ text: String) -> TVRemoteCommand {
+    public static func createTextInputCommand(_ text: String) -> TVRemoteCommand {
         TVRemoteCommand(
             method: .control,
             params: .init(
@@ -242,7 +242,7 @@ extension TVRemoteCommand {
 // MARK: URL
 
 extension URL {
-    var removingPercentEncoding: URL? {
+    public var removingPercentEncoding: URL? {
         absoluteString.removingPercentEncoding.flatMap(URL.init(string:))
     }
 }
