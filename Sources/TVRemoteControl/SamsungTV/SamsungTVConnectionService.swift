@@ -7,7 +7,7 @@ public final class SamsungTVConnectionService: @unchecked Sendable {
     
     private var tvCommander: SamsungTV?
     
-    public var connectedDevice: TV? {
+    public var connectedDevice: SamsungTVModel? {
         didSet {
             if connectedDevice != nil {
                 isConnected = true
@@ -17,7 +17,7 @@ public final class SamsungTVConnectionService: @unchecked Sendable {
         }
     }
     
-    private var connectionDevice: TV?
+    private var connectionDevice: SamsungTVModel?
     
     @Published public private(set) var isConnected: Bool = false
     
@@ -25,7 +25,7 @@ public final class SamsungTVConnectionService: @unchecked Sendable {
         $isConnected.eraseToAnyPublisher()
     }
     
-    public func connect(to device: TV, appName: String, commander: SamsungTV?) {
+    public func connect(to device: SamsungTVModel, appName: String, commander: SamsungTV?) {
         
         if let commander  {
             
@@ -53,7 +53,7 @@ public final class SamsungTVConnectionService: @unchecked Sendable {
         
     }
     
-    public func sendCommand(_ command: TVRemoteCommand.Params.ControlKey) {
+    public func sendCommand(_ command: SamsungTVRemoteCommand.Params.ControlKey) {
         guard connectedDevice != nil else {
             return
         }
@@ -79,7 +79,7 @@ extension SamsungTVConnectionService: SamsungTVDelegate {
         
     }
     
-    public func samsungTV(_ samsungTV: SamsungTV, didUpdateAuthState authStatus: TVAuthStatus) {
+    public func samsungTV(_ samsungTV: SamsungTV, didUpdateAuthState authStatus: SamsungTVAuthStatus) {
         switch authStatus {
         case .allowed:
             
@@ -92,7 +92,7 @@ extension SamsungTVConnectionService: SamsungTVDelegate {
         }
     }
     
-    public func samsungTV(_ samsungTV: SamsungTV, didWriteRemoteCommand command: TVRemoteCommand) {
+    public func samsungTV(_ samsungTV: SamsungTV, didWriteRemoteCommand command: SamsungTVRemoteCommand) {
         
     }
     

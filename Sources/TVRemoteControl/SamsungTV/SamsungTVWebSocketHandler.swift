@@ -1,17 +1,17 @@
 import Foundation
 import Starscream
 
-protocol TVWebSocketHandlerDelegate: AnyObject {
+protocol SamsungTVWebSocketHandlerDelegate: AnyObject {
     func webSocketDidConnect()
     func webSocketDidDisconnect()
-    func webSocketDidReadAuthStatus(_ authStatus: TVAuthStatus)
-    func webSocketDidReadAuthToken(_ authToken: TVAuthToken)
+    func webSocketDidReadAuthStatus(_ authStatus: SamsungTVAuthStatus)
+    func webSocketDidReadAuthToken(_ authToken: SamsungTVAuthToken)
     func webSocketError(_ error: SamsungTVError)
 }
 
-class TVWebSocketHandler {
+class SamsungTVWebSocketHandler {
     private let decoder = JSONDecoder()
-    weak var delegate: TVWebSocketHandlerDelegate?
+    weak var delegate: SamsungTVWebSocketHandlerDelegate?
 
     // MARK: Interact with WebSocket
 
@@ -50,11 +50,11 @@ class TVWebSocketHandler {
 
     // MARK: Receive Auth
 
-    private func parseAuthResponse(from packet: Data) -> TVAuthResponse? {
-        try? decoder.decode(TVAuthResponse.self, from: packet)
+    private func parseAuthResponse(from packet: Data) -> SamsungTVAuthResponse? {
+        try? decoder.decode(SamsungTVAuthResponse.self, from: packet)
     }
 
-    private func handleAuthResponse(_ response: TVAuthResponse) {
+    private func handleAuthResponse(_ response: SamsungTVAuthResponse) {
         switch response.event {
         case .connect:
             parseTokenFromAuthResponse(response)
@@ -68,7 +68,7 @@ class TVWebSocketHandler {
         }
     }
 
-    private func parseTokenFromAuthResponse(_ response: TVAuthResponse) {
+    private func parseTokenFromAuthResponse(_ response: SamsungTVAuthResponse) {
         if let newToken = response.data?.token {
             delegate?.webSocketDidReadAuthToken(newToken)
         } else if let refreshedToken = response.data?.clients.first?.attributes.token {

@@ -14,9 +14,9 @@ public enum SamsungTVError: LocalizedError, @unchecked Sendable {
     // parsing for packet data fails.
     case packetDataParsingFailed
     // response for authentication contains unexpected event
-    case authResponseUnexpectedChannelEvent(TVAuthResponse)
+    case authResponseUnexpectedChannelEvent(SamsungTVAuthResponse)
     // no token is found inside an allowed authentication response.
-    case noTokenInAuthResponse(TVAuthResponse)
+    case noTokenInAuthResponse(SamsungTVAuthResponse)
     // trying to send a command without being connected to a TV
     case remoteCommandNotConnectedToTV
     // trying to send a command when authentication status is not allowed.

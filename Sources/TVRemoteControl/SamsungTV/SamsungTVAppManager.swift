@@ -1,11 +1,11 @@
 import Foundation
 
-public protocol TVAppManaging {
-    func fetchStatus(for tvApp: TVApp, tvIPAddress: String) async throws -> TVAppStatus
-    func launch(tvApp: TVApp, tvIPAddress: String) async throws
+public protocol SamsungTVAppManaging {
+    func fetchStatus(for tvApp: SamsungTVApp, tvIPAddress: String) async throws -> SamsungTVAppStatus
+    func launch(tvApp: SamsungTVApp, tvIPAddress: String) async throws
 }
 
-enum TVAppManagerError: LocalizedError {
+enum SamsungTVAppManagerError: LocalizedError {
     case badURL(description: String)
     case noData
     case networkError(description: String)
@@ -22,50 +22,50 @@ enum TVAppManagerError: LocalizedError {
     }
 }
 
-public class TVAppManager: TVAppManaging {
-    private let urlBuilder: TVAppURLBuilding
-    private let networkManager: TVAppNetworkManaging
-    private let decoder: TVAppDecoding
+public class SamsungTVAppManager: SamsungTVAppManaging {
+    private let urlBuilder: SamsungTVAppURLBuilding
+    private let networkManager: SamsungTVAppNetworkManaging
+    private let decoder: SamsungTVAppDecoding
 
     public init(
-        urlBuilder: TVAppURLBuilding = TVAppURLBuilder(),
-        networkManager: TVAppNetworkManaging = TVAppNetworkManager(),
-        decoder: TVAppDecoding = TVAppDecoder()
+        urlBuilder: SamsungTVAppURLBuilding = SamsungTVAppURLBuilder(),
+        networkManager: SamsungTVAppNetworkManaging = SamsungTVAppNetworkManager(),
+        decoder: SamsungTVAppDecoding = SamsungTVAppDecoder()
     ) {
         self.urlBuilder = urlBuilder
         self.networkManager = networkManager
         self.decoder = decoder
     }
 
-    public func fetchStatus(for tvApp: TVApp, tvIPAddress: String) async throws -> TVAppStatus {
+    public func fetchStatus(for tvApp: SamsungTVApp, tvIPAddress: String) async throws -> SamsungTVAppStatus {
         let url = try buildURL(tvApp: tvApp, tvIPAddress: tvIPAddress)
         guard let data = try await networkManager.sendRequest(url: url) else {
-            throw TVAppManagerError.noData
+            throw SamsungTVAppManagerError.noData
         }
         return try decoder.decodeAppStatus(from: data)
     }
 
-    public func launch(tvApp: TVApp, tvIPAddress: String) async throws {
+    public func launch(tvApp: SamsungTVApp, tvIPAddress: String) async throws {
         let url = try buildURL(tvApp: tvApp, tvIPAddress: tvIPAddress)
         try await networkManager.sendRequest(url: url, method: "POST")
     }
 
-    private func buildURL(tvApp: TVApp, tvIPAddress: String) throws -> URL {
+    private func buildURL(tvApp: SamsungTVApp, tvIPAddress: String) throws -> URL {
         if let url = urlBuilder.buildURL(tvIPAddress: tvIPAddress, tvAppId: tvApp.id) {
             return url
         } else {
-            throw TVAppManagerError.badURL(description: "Unable to build URL for IP: \(tvIPAddress)")
+            throw SamsungTVAppManagerError.badURL(description: "Unable to build URL for IP: \(tvIPAddress)")
         }
     }
 }
 
 // MARK: - Build App URL
 
-public protocol TVAppURLBuilding {
+public protocol SamsungTVAppURLBuilding {
     func buildURL(tvIPAddress: String, tvAppId: String) -> URL?
 }
 
-public class TVAppURLBuilder: TVAppURLBuilding {
+public class SamsungTVAppURLBuilder: SamsungTVAppURLBuilding {
     public init() {
     }
 
@@ -81,12 +81,12 @@ public class TVAppURLBuilder: TVAppURLBuilding {
 
 // MARK: - Send HTTP Request
 
-public protocol TVAppNetworkManaging {
+public protocol SamsungTVAppNetworkManaging {
     @discardableResult
     func sendRequest(url: URL, method: String) async throws -> Data?
 }
 
-extension TVAppNetworkManaging {
+extension SamsungTVAppNetworkManaging {
     func sendRequest(url: URL) async throws -> Data? {
         try await sendRequest(url: url, method: "GET")
     }
@@ -106,7 +106,7 @@ enum TVAppNetworkError: LocalizedError {
     }
 }
 
-public class TVAppNetworkManager: TVAppNetworkManaging {
+public class SamsungTVAppNetworkManager: SamsungTVAppNetworkManaging {
     private let session: URLSession
 
     public init(session: URLSession = .shared) {
@@ -135,18 +135,18 @@ public class TVAppNetworkManager: TVAppNetworkManaging {
 
 // MARK: Decode App Status
 
-public protocol TVAppDecoding {
-    func decodeAppStatus(from data: Data) throws -> TVAppStatus
+public protocol SamsungTVAppDecoding {
+    func decodeAppStatus(from data: Data) throws -> SamsungTVAppStatus
 }
 
-public class TVAppDecoder: TVAppDecoding {
+public class SamsungTVAppDecoder: SamsungTVAppDecoding {
     private let decoder: JSONDecoder
 
     public init(decoder: JSONDecoder = .init()) {
         self.decoder = decoder
     }
 
-    public func decodeAppStatus(from data: Data) throws -> TVAppStatus {
-        try decoder.decode(TVAppStatus.self, from: data)
+    public func decodeAppStatus(from data: Data) throws -> SamsungTVAppStatus {
+        try decoder.decode(SamsungTVAppStatus.self, from: data)
     }
 }

@@ -1,10 +1,10 @@
 import Foundation
 import Starscream
 
-class TVWebSocketCreator {
-    let builder: TVWebSocketBuilder
+class SamsungTVWebSocketCreator {
+    let builder: SamsungTVWebSocketBuilder
 
-    init(builder: TVWebSocketBuilder = .init()) {
+    init(builder: SamsungTVWebSocketBuilder = .init()) {
         self.builder = builder
     }
 
@@ -14,14 +14,14 @@ class TVWebSocketCreator {
         delegate: WebSocketDelegate
     ) -> WebSocket {
         builder.setURLRequest(.init(url: url))
-        builder.setCertPinner(certPinner ?? TVDefaultWebSocketCertPinner())
+        builder.setCertPinner(certPinner ?? SamsungTVDefaultWebSocketCertPinner())
         builder.setDelegate(delegate)
         return builder.getWebSocket()!
     }
 }
 
 /// Default cert-pinning implementation that trusts all connections
-private class TVDefaultWebSocketCertPinner: CertificatePinning {
+private class SamsungTVDefaultWebSocketCertPinner: CertificatePinning {
     func evaluateTrust(trust: SecTrust, domain: String?, completion: ((PinningState) -> ())) {
         completion(.success)
     }

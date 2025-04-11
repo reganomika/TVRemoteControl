@@ -3,7 +3,7 @@ import Foundation
 // MARK: Data
 
 extension Data {
-    public static func magicPacket(from device: TVWakeOnLANDevice) -> Data {
+    public static func magicPacket(from device: SamsungTVWakeOnLANDevice) -> Data {
         var magicPacketRaw = [UInt8](repeating: 0xFF, count: 6)
         let macAddressData = device.mac.split(separator: ":").compactMap { UInt8($0, radix: 16) }
         for _ in 0..<16 { magicPacketRaw.append(contentsOf: macAddressData) }
@@ -67,7 +67,7 @@ extension String {
 
 // MARK: TV
 
-extension TV {
+extension SamsungTVModel {
     public var ipAddress: String? {
         if let httpURLHost = URLComponents(string: uri)?.host,
            httpURLHost.isValidIPAddress {
@@ -79,8 +79,8 @@ extension TV {
         return nil
     }
 
-    public func addingDevice(_ device: TV.Device) -> TV {
-        TV(
+    public func addingDevice(_ device: SamsungTVModel.Device) -> SamsungTVModel {
+        SamsungTVModel(
             device: device,
             id: id,
             isSupport: isSupport,
@@ -95,8 +95,8 @@ extension TV {
 
 // MARK: TVApp
 
-extension TVApp {
-    public static func allApps() -> [TVApp] {
+extension SamsungTVApp {
+    public static func allApps() -> [SamsungTVApp] {
         [
             espn(),
             hulu(),
@@ -110,46 +110,46 @@ extension TVApp {
         ]
     }
 
-    public static func espn() -> TVApp {
-        TVApp(id: "3201708014618", name: "ESPN")
+    public static func espn() -> SamsungTVApp {
+        SamsungTVApp(id: "3201708014618", name: "ESPN")
     }
 
-    public static func hulu() -> TVApp {
-        TVApp(id: "3201601007625", name: "Hulu")
+    public static func hulu() -> SamsungTVApp {
+        SamsungTVApp(id: "3201601007625", name: "Hulu")
     }
 
-    public static func max() -> TVApp {
-        TVApp(id: "3202301029760", name: "Max")
+    public static func max() -> SamsungTVApp {
+        SamsungTVApp(id: "3202301029760", name: "Max")
     }
 
-    public static func netflix() -> TVApp {
-        TVApp(id: "3201907018807", name: "Netflix")
+    public static func netflix() -> SamsungTVApp {
+        SamsungTVApp(id: "3201907018807", name: "Netflix")
     }
 
-    public static func paramountPlus() -> TVApp {
-        TVApp(id: "3201710014981", name: "Paramount +")
+    public static func paramountPlus() -> SamsungTVApp {
+        SamsungTVApp(id: "3201710014981", name: "Paramount +")
     }
 
-    public static func plutoTV() -> TVApp {
-        TVApp(id: "3201808016802", name: "Pluto TV")
+    public static func plutoTV() -> SamsungTVApp {
+        SamsungTVApp(id: "3201808016802", name: "Pluto TV")
     }
 
-    public static func primeVideo() -> TVApp {
-        TVApp(id: "3201910019365", name: "Prime Video")
+    public static func primeVideo() -> SamsungTVApp {
+        SamsungTVApp(id: "3201910019365", name: "Prime Video")
     }
 
-    public static func spotify() -> TVApp {
-        TVApp(id: "3201606009684", name: "Spotify")
+    public static func spotify() -> SamsungTVApp {
+        SamsungTVApp(id: "3201606009684", name: "Spotify")
     }
 
-    public static func youtube() -> TVApp {
-        TVApp(id: "111299001912", name: "YouTube")
+    public static func youtube() -> SamsungTVApp {
+        SamsungTVApp(id: "111299001912", name: "YouTube")
     }
 }
 
 // MARK: TVConnectionConfiguration
 
-extension TVConnectionConfiguration {
+extension SamsungTVConnectionConfiguration {
     public func wssURL() -> URL? {
         var components = URLComponents()
         components.path = path
@@ -188,9 +188,9 @@ extension TVKeyboardLayout {
 
 // MARK: TVRemoteCommand
 
-extension TVRemoteCommand {
-    public static func createClickCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
-        TVRemoteCommand(
+extension SamsungTVRemoteCommand {
+    public static func createClickCommand(_ key: SamsungTVRemoteCommand.Params.ControlKey) -> SamsungTVRemoteCommand {
+        SamsungTVRemoteCommand(
             method: .control,
             params: .init(
                 cmd: .click,
@@ -201,8 +201,8 @@ extension TVRemoteCommand {
         )
     }
 
-    public static func createPressCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
-        TVRemoteCommand(
+    public static func createPressCommand(_ key: SamsungTVRemoteCommand.Params.ControlKey) -> SamsungTVRemoteCommand {
+        SamsungTVRemoteCommand(
             method: .control,
             params: .init(
                 cmd: .press,
@@ -213,8 +213,8 @@ extension TVRemoteCommand {
         )
     }
 
-    public static func createReleaseCommand(_ key: TVRemoteCommand.Params.ControlKey) -> TVRemoteCommand {
-        TVRemoteCommand(
+    public static func createReleaseCommand(_ key: SamsungTVRemoteCommand.Params.ControlKey) -> SamsungTVRemoteCommand {
+        SamsungTVRemoteCommand(
             method: .control,
             params: .init(
                 cmd: .release,
@@ -225,8 +225,8 @@ extension TVRemoteCommand {
         )
     }
 
-    public static func createTextInputCommand(_ text: String) -> TVRemoteCommand {
-        TVRemoteCommand(
+    public static func createTextInputCommand(_ text: String) -> SamsungTVRemoteCommand {
+        SamsungTVRemoteCommand(
             method: .control,
             params: .init(
                 cmd: .textInput(Data(text.utf8).base64EncodedString()),

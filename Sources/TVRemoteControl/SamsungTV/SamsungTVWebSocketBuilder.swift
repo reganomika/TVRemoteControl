@@ -1,7 +1,7 @@
 import Foundation
 import Starscream
 
-class TVWebSocketBuilder {
+class SamsungTVWebSocketBuilder {
     private var urlRequest: URLRequest?
     private var certPinner: CertificatePinning?
     private var engine: Engine?

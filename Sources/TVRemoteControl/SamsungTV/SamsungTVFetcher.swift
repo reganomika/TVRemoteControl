@@ -1,6 +1,6 @@
 import Foundation
 
-public class TVFetcher: @unchecked Sendable {
+public class SamsungTVFetcher: @unchecked Sendable {
     private let session: URLSession
     private var dataTask: URLSessionDataTask?
 
@@ -8,7 +8,7 @@ public class TVFetcher: @unchecked Sendable {
         self.session = session
     }
 
-    public func fetchDevice(for tv: TV, completion: @escaping @Sendable (Result<TV, TVFetcherError>) -> Void) {
+    public func fetchDevice(for tv: SamsungTVModel, completion: @escaping @Sendable (Result<SamsungTVModel, SamsungTVFetcherError>) -> Void) {
         guard let url = URL(string: tv.uri) else {
             completion(.failure(.invalidURL))
             return
@@ -23,7 +23,7 @@ public class TVFetcher: @unchecked Sendable {
                 return
             }
             do {
-                let updatedTV = try JSONDecoder().decode(TV.self, from: data)
+                let updatedTV = try JSONDecoder().decode(SamsungTVModel.self, from: data)
                 completion(.success(updatedTV))
             } catch {
                 completion(.failure(.unexpectedResponseBody(data)))
@@ -41,8 +41,8 @@ public class TVFetcher: @unchecked Sendable {
     }
 }
 
-public enum TVFetcherError: @unchecked Sendable, Error, Equatable {
-    public static func == (lhs: TVFetcherError, rhs: TVFetcherError) -> Bool {
+public enum SamsungTVFetcherError: @unchecked Sendable, Error, Equatable {
+    public static func == (lhs: SamsungTVFetcherError, rhs: SamsungTVFetcherError) -> Bool {
         switch (lhs, rhs) {
         case (.invalidURL, .invalidURL):
             return true

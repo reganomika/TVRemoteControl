@@ -5,35 +5,35 @@ import Network
 public protocol SamsungTVDelegate: AnyObject {
     func samsungTVDidConnect(_ samsungTV: SamsungTV)
     func samsungTVDidDisconnect(_ samsungTV: SamsungTV)
-    func samsungTV(_ samsungTV: SamsungTV, didUpdateAuthState authStatus: TVAuthStatus)
-    func samsungTV(_ samsungTV: SamsungTV, didWriteRemoteCommand command: TVRemoteCommand)
+    func samsungTV(_ samsungTV: SamsungTV, didUpdateAuthState authStatus: SamsungTVAuthStatus)
+    func samsungTV(_ samsungTV: SamsungTV, didWriteRemoteCommand command: SamsungTVRemoteCommand)
     func samsungTV(_ samsungTV: SamsungTV, didEncounterError error: SamsungTVError)
 }
 
 public class SamsungTV: @unchecked Sendable, WebSocketDelegate {
     public weak var delegate: SamsungTVDelegate?
-    private(set) public var tvConfig: TVConnectionConfiguration
-    private(set) public var authStatus = TVAuthStatus.none
+    private(set) public var tvConfig: SamsungTVConnectionConfiguration
+    private(set) public var authStatus = SamsungTVAuthStatus.none
     private(set) public var isConnected = false
-    private let webSocketCreator: TVWebSocketCreator
-    private let webSocketHandler = TVWebSocketHandler()
+    private let webSocketCreator: SamsungTVWebSocketCreator
+    private let webSocketHandler = SamsungTVWebSocketHandler()
     private var webSocket: WebSocket?
-    private var commandQueue = [TVRemoteCommand]()
+    private var commandQueue = [SamsungTVRemoteCommand]()
 
-    init(tvConfig: TVConnectionConfiguration, webSocketCreator: TVWebSocketCreator) {
+    init(tvConfig: SamsungTVConnectionConfiguration, webSocketCreator: SamsungTVWebSocketCreator) {
         self.tvConfig = tvConfig
         self.webSocketCreator = webSocketCreator
         self.webSocketHandler.delegate = self
     }
 
-    public convenience init(tvId: String? = nil, tvIPAddress: String, appName: String, authToken: TVAuthToken? = nil) throws {
+    public convenience init(tvId: String? = nil, tvIPAddress: String, appName: String, authToken: SamsungTVAuthToken? = nil) throws {
         guard appName.isValidAppName else {
             throw SamsungTVError.invalidAppNameEntered
         }
         guard tvIPAddress.isValidIPAddress else {
             throw SamsungTVError.invalidIPAddressEntered
         }
-        let tvConfig = TVConnectionConfiguration(
+        let tvConfig = SamsungTVConnectionConfiguration(
             id: tvId,
             app: appName,
             path: "/api/v2/channels/samsung.remote.control",
@@ -42,10 +42,10 @@ public class SamsungTV: @unchecked Sendable, WebSocketDelegate {
             scheme: "wss",
             token: authToken
         )
-        self.init(tvConfig: tvConfig, webSocketCreator: TVWebSocketCreator())
+        self.init(tvConfig: tvConfig, webSocketCreator: SamsungTVWebSocketCreator())
     }
 
-    public convenience init(tv: TV, appName: String, authToken: TVAuthToken? = nil) throws {
+    public convenience init(tv: SamsungTVModel, appName: String, authToken: SamsungTVAuthToken? = nil) throws {
         guard let ipAddress = tv.ipAddress else { throw SamsungTVError.invalidIPAddressEntered }
         try self.init(tvId: tv.id, tvIPAddress: ipAddress, appName: appName, authToken: authToken)
     }
@@ -73,7 +73,7 @@ public class SamsungTV: @unchecked Sendable, WebSocketDelegate {
 
     // MARK: Send Remote Control Commands
 
-    public func sendRemoteCommand(key: TVRemoteCommand.Params.ControlKey) {
+    public func sendRemoteCommand(key: SamsungTVRemoteCommand.Params.ControlKey) {
         guard isConnected else {
             handleError(.remoteCommandNotConnectedToTV)
             return
@@ -98,7 +98,7 @@ public class SamsungTV: @unchecked Sendable, WebSocketDelegate {
         sendCommandOverWebSocket(.createTextInputCommand(text))
     }
 
-    private func sendCommandOverWebSocket(_ command: TVRemoteCommand) {
+    private func sendCommandOverWebSocket(_ command: SamsungTVRemoteCommand) {
         commandQueue.append(command)
         if commandQueue.count == 1 {
             sendNextQueuedCommandOverWebSocket()
@@ -137,11 +137,11 @@ public class SamsungTV: @unchecked Sendable, WebSocketDelegate {
         keys.forEach(sendRemoteCommand(key:))
     }
 
-    private func controlKeys(toEnter text: String, on keyboard: TVKeyboardLayout) -> [TVRemoteCommand.Params.ControlKey] {
+    private func controlKeys(toEnter text: String, on keyboard: TVKeyboardLayout) -> [SamsungTVRemoteCommand.Params.ControlKey] {
         guard !text.isEmpty else { return [] } // Check for empty string, otherwise it will crash on line 145
 
         let chars = Array(text)
-        var moves: [TVRemoteCommand.Params.ControlKey] = [.enter]
+        var moves: [SamsungTVRemoteCommand.Params.ControlKey] = [.enter]
         for i in 0..<(chars.count - 1) {
             let currentChar = String(chars[i])
             let nextChar = String(chars[i + 1])
@@ -155,14 +155,14 @@ public class SamsungTV: @unchecked Sendable, WebSocketDelegate {
         return moves
     }
 
-    private func controlKeys(toMoveFrom char1: String, to char2: String, on keyboard: TVKeyboardLayout) -> [TVRemoteCommand.Params.ControlKey]? {
+    private func controlKeys(toMoveFrom char1: String, to char2: String, on keyboard: TVKeyboardLayout) -> [SamsungTVRemoteCommand.Params.ControlKey]? {
         guard let (startRow, startCol) = coordinates(of: char1, on: keyboard),
               let (endRow, endCol) = coordinates(of: char2, on: keyboard) else {
             return nil
         }
         let rowDiff = endRow - startRow
         let colDiff = endCol - startCol
-        var moves: [TVRemoteCommand.Params.ControlKey] = []
+        var moves: [SamsungTVRemoteCommand.Params.ControlKey] = []
         if rowDiff > 0 {
             moves += Array(repeating: .down, count: rowDiff)
         } else if rowDiff < 0 {
@@ -200,7 +200,7 @@ public class SamsungTV: @unchecked Sendable, WebSocketDelegate {
     // MARK: Wake on LAN
 
     public static func wakeOnLAN(
-        device: TVWakeOnLANDevice,
+        device: SamsungTVWakeOnLANDevice,
         queue: DispatchQueue = .global(),
         completion: @escaping @Sendable (SamsungTVError?) -> Void
     ) {
@@ -231,7 +231,7 @@ public class SamsungTV: @unchecked Sendable, WebSocketDelegate {
 
 // MARK: TVWebSocketHandlerDelegate
 
-extension SamsungTV: TVWebSocketHandlerDelegate {
+extension SamsungTV: SamsungTVWebSocketHandlerDelegate {
     func webSocketDidConnect() {
         isConnected = true
         delegate?.samsungTVDidConnect(self)
@@ -244,12 +244,12 @@ extension SamsungTV: TVWebSocketHandlerDelegate {
         delegate?.samsungTVDidDisconnect(self)
     }
     
-    func webSocketDidReadAuthStatus(_ authStatus: TVAuthStatus) {
+    func webSocketDidReadAuthStatus(_ authStatus: SamsungTVAuthStatus) {
         self.authStatus = authStatus
         delegate?.samsungTV(self, didUpdateAuthState: authStatus)
     }
     
-    func webSocketDidReadAuthToken(_ authToken: TVAuthToken) {
+    func webSocketDidReadAuthToken(_ authToken: SamsungTVAuthToken) {
         tvConfig.token = authToken
     }
     

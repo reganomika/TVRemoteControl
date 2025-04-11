@@ -1,7 +1,7 @@
 import Foundation
 
 /// Represents a TV discovered in a search
-public struct TV: Codable, Identifiable, Equatable {
+public struct SamsungTVModel: Codable, Identifiable, Equatable {
     /// Represents detailed device information for a TV
     public struct Device: Codable, Equatable {
         public let countryCode: String?
@@ -164,7 +164,7 @@ public struct TV: Codable, Identifiable, Equatable {
     }
 }
 
-public enum TVAuthStatus {
+public enum SamsungTVAuthStatus {
     /// Client hasn't completed authorization with TV
     case none
     /// Client is authorized to command TV
@@ -173,18 +173,18 @@ public enum TVAuthStatus {
     case denied
 }
 
-public typealias TVAuthToken = String
+public typealias SamsungTVAuthToken = String
 
-public struct TVConnectionConfiguration {
+public struct SamsungTVConnectionConfiguration {
     public let id: String?
     public let app: String
     public let path: String
     public let ipAddress: String
     public let port: Int
     public let scheme: String
-    public var token: TVAuthToken?
+    public var token: SamsungTVAuthToken?
 
-    public init(id: String?, app: String, path: String, ipAddress: String, port: Int, scheme: String, token: TVAuthToken?) {
+    public init(id: String?, app: String, path: String, ipAddress: String, port: Int, scheme: String, token: SamsungTVAuthToken?) {
         self.id = id
         self.app = app
         self.path = path
@@ -196,7 +196,7 @@ public struct TVConnectionConfiguration {
 }
 
 /// Defines the overall command to be sent to the TV
-public struct TVRemoteCommand: Encodable {
+public struct SamsungTVRemoteCommand: Encodable {
     public enum Method: String, Codable {
         case control = "ms.remote.control"
     }
@@ -321,22 +321,22 @@ public struct TVRemoteCommand: Encodable {
 
 public struct TVResponse<Body: Codable>: Codable {
     public let data: Body?
-    public let event: TVChannelEvent
+    public let event: SamsungTVChannelEvent
 }
 
-public typealias TVAuthResponse = TVResponse<TVAuthResponseBody>
+public typealias SamsungTVAuthResponse = TVResponse<SamsungTVAuthResponseBody>
 
 /// Data payload associated with a TVAuthResponse
-public struct TVAuthResponseBody: Codable {
+public struct SamsungTVAuthResponseBody: Codable {
     /// List of clients connected to the TV
-    public let clients: [TVClient]
+    public let clients: [SamsungTVClient]
     /// Identifier associated with an authorized connection
     public let id: String
     /// New token passed back with an authorized connection
-    public let token: TVAuthToken?
+    public let token: SamsungTVAuthToken?
 }
 
-public enum TVChannelEvent: String, Codable {
+public enum SamsungTVChannelEvent: String, Codable {
     case connect = "ms.channel.connect"
     case disconnect = "ms.channel.disconnect"
     case clientConnect = "ms.channel.clientConnect"
@@ -351,15 +351,15 @@ public enum TVChannelEvent: String, Codable {
 }
 
 /// Represents a client connected to the TV
-public struct TVClient: Codable, Identifiable {
+public struct SamsungTVClient: Codable, Identifiable {
     /// Attributes of a client connected to the TV
     public struct Attributes: Codable {
         /// Name of the client (encoded in Base64)
         public let name: String?
         /// Refreshed token associated with the client
-        public let token: TVAuthToken?
+        public let token: SamsungTVAuthToken?
 
-        public init(name: String?, token: TVAuthToken?) {
+        public init(name: String?, token: SamsungTVAuthToken?) {
             self.name = name
             self.token = token
         }
@@ -387,7 +387,7 @@ public struct TVClient: Codable, Identifiable {
 
 public typealias TVKeyboardLayout = [[String]]
 
-public struct TVWakeOnLANDevice: @unchecked Sendable  {
+public struct SamsungTVWakeOnLANDevice: @unchecked Sendable  {
     public var mac: String
     public var broadcast: String
     public var port: UInt16
@@ -398,12 +398,12 @@ public struct TVWakeOnLANDevice: @unchecked Sendable  {
         self.port = port
     }
 
-    public init(device: TV.Device, broadcast: String = "255.255.255.255", port: UInt16 = 9) {
+    public init(device: SamsungTVModel.Device, broadcast: String = "255.255.255.255", port: UInt16 = 9) {
         self.init(mac: device.wifiMac, broadcast: broadcast, port: port)
     }
 }
 
-public struct TVApp: Identifiable, Hashable {
+public struct SamsungTVApp: Identifiable, Hashable {
     public let id: String
     public let name: String
 
@@ -413,7 +413,7 @@ public struct TVApp: Identifiable, Hashable {
     }
 }
 
-public struct TVAppStatus: Codable, Identifiable {
+public struct SamsungTVAppStatus: Codable, Identifiable {
     public let id: String
     public let name: String
     public let running: Bool
