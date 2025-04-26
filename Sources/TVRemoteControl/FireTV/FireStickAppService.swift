@@ -1,6 +1,6 @@
 import Foundation
 
-public struct App: Decodable {
+public struct FireStickApp: Decodable {
     public init(appId: String, name: String, iconArtSmallUri: String, isInstalled: Bool) {
         self.appId = appId
         self.name = name
@@ -14,7 +14,7 @@ public struct App: Decodable {
     public let isInstalled: Bool
 }
 
-final class AppService {
+final class FireStickAppService {
     private let networkManager = NetworkManager.shared
     
     private let apiKey: String
@@ -26,7 +26,7 @@ final class AppService {
     func getApps(
         ip: String?,
         token: String?,
-        completion: @escaping @Sendable (Result<[App], Error>) -> Void
+        completion: @escaping @Sendable (Result<[FireStickApp], Error>) -> Void
     ) {
         guard let ip ,
               let url = URL(string: "https://\(ip):8080/v1/FireTV/apps") else {
@@ -37,7 +37,7 @@ final class AppService {
             switch result {
             case .success(let data):
                 do {
-                    let apps = try JSONDecoder().decode([App].self, from: data)
+                    let apps = try JSONDecoder().decode([FireStickApp].self, from: data)
                     completion(.success(apps))
                 } catch {
                     completion(.failure(error))
@@ -51,7 +51,7 @@ final class AppService {
     func openApp(
         ip: String?,
         token: String?,
-        app: App
+        app: FireStickApp
     ) {
         guard let ip, let url = URL(string: "https://\(ip):8080/v1/FireTV/app/\(app.appId)") else {
             return

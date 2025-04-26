@@ -15,6 +15,7 @@ let package = Package(
             targets: ["TVRemoteControl"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/reganomika/TVDiscovery", branch: "main"),
         .package(url: "https://github.com/wdesimini/TVCommanderKit", branch: "main")
     ],
     targets: [
@@ -22,7 +23,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "TVRemoteControl",
-            dependencies: ["TVCommanderKit"]
+            dependencies: ["TVCommanderKit", "TVDiscovery"]
         ),
         .testTarget(
             name: "TVRemoteControlTests",

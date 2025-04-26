@@ -1,6 +1,6 @@
 import Foundation
 
-final class CommandService {
+final class FireStickCommandService {
     
     private let networkManager = NetworkManager.shared
     

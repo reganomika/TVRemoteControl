@@ -1,5 +1,5 @@
 {
-  "originHash" : "4fc76be594ce712df2b0e3e6ba8600d455cf7f38b87bad359f8a0aff1af4f500",
+  "originHash" : "a3dcf745d8ab750c99e222ea3a68719cc4e4496bf414bfb1f4100b4e1b73112e",
   "pins" : [
     {
       "identity" : "starscream",
@@ -17,6 +17,15 @@
       "state" : {
         "branch" : "main",
         "revision" : "c92038583e58a4d3d1cba229b13dd39906519686"
+      }
+    },
+    {
+      "identity" : "tvdiscovery",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/reganomika/TVDiscovery",
+      "state" : {
+        "branch" : "main",
+        "revision" : "c823b35daff8fbc100f5c17daa1c19c5284572f3"
       }
     }
   ],

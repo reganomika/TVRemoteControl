@@ -1,10 +1,10 @@
 import Foundation
 
-public struct VerifyResult {
+public struct FireStickVerifyResult {
     public let token: String
 }
 
-final class AuthService {
+final class FireStickAuthService {
     private let networkManager = NetworkManager.shared
     
     private let apiKey: String

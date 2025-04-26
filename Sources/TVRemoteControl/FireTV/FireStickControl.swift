@@ -50,13 +50,13 @@ public enum FireStickError: Error {
     case invalidFormat
 }
 
-public class TVRemoteControl: @unchecked Sendable {
-    public static let shared = TVRemoteControl()
+public class FireStickControl: @unchecked Sendable {
+    public static let shared = FireStickControl()
     
-    private lazy var authService = AuthService(apiKey: apiKey)
-    private lazy var commandService = CommandService(apiKey: apiKey)
-    private lazy var appService = AppService(apiKey: apiKey)
-    private let deviceService = DeviceService()
+    private lazy var authService = FireStickAuthService(apiKey: apiKey)
+    private lazy var commandService = FireStickCommandService(apiKey: apiKey)
+    private lazy var appService = FireStickAppService(apiKey: apiKey)
+    private let deviceService = FireStickDeviceService()
     
     private var apiKey: String = ""
     
@@ -110,7 +110,7 @@ public class TVRemoteControl: @unchecked Sendable {
     public func getApps(
         ip: String?,
         token: String?,
-        completion: @escaping @Sendable (Result<[App], Error>) -> Void
+        completion: @escaping @Sendable (Result<[FireStickApp], Error>) -> Void
     ) {
         appService.getApps(ip: ip, token: token, completion: completion)
     }
@@ -125,7 +125,7 @@ public class TVRemoteControl: @unchecked Sendable {
     }
     
     public func openApp(
-        app: App,
+        app: FireStickApp,
         ip: String?,
         token: String?
     ) {

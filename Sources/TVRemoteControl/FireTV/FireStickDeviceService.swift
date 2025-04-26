@@ -1,6 +1,6 @@
 import Foundation
 
-public class DeviceService {
+public class FireStickDeviceService {
     private let networkManager = NetworkManager.shared
     
     public func fetchDeviceInfo(
