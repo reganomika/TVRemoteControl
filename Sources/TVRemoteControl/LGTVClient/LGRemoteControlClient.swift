@@ -1,6 +1,6 @@
 import Foundation
 
-public class RemoteControlClient: NSObject, RemoteControlClientProtocol, @unchecked Sendable {
+public class LGRemoteControlClient: NSObject, RemoteControlClientProtocol, @unchecked Sendable {
     private var url: URL
     private var urlSession: URLSession?
     private var primaryWebSocketTask: URLSessionWebSocketTask?
@@ -61,7 +61,7 @@ public class RemoteControlClient: NSObject, RemoteControlClientProtocol, @unchec
     }
 }
 
-extension RemoteControlClient {
+extension LGRemoteControlClient {
     fileprivate func connect(
         _ url: URL,
         task: inout URLSessionWebSocketTask?
@@ -133,7 +133,7 @@ extension RemoteControlClient {
     }
 }
 
-extension RemoteControlClient: URLSessionWebSocketDelegate {
+extension LGRemoteControlClient: URLSessionWebSocketDelegate {
     public func urlSession(
         _ session: URLSession,
         webSocketTask: URLSessionWebSocketTask,
