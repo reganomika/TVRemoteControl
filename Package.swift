@@ -15,7 +15,7 @@ let package = Package(
             targets: ["TVRemoteControl"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/reganomika/TVDiscovery", branch: "main"),
+        .package(url: "https://github.com/reganomika/TVDiscovery", from: "1.0.2"),
         .package(url: "https://github.com/wdesimini/TVCommanderKit", branch: "main")
     ],
     targets: [
