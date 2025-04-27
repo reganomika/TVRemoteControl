@@ -1,7 +1,7 @@
 import Foundation
 
-public struct RemoteControlResponsePayload: Codable {
-    public init(pairingType: RemoteControlPairingType? = nil, clientKey: String? = nil, volumeStatus: RemoteControlResponseVolumeStatus? = nil, applications: [RemoteControlResponseApplication]? = nil, socketPath: String? = nil) {
+public struct LGRemoteControlResponsePayload: Codable {
+    public init(pairingType: LGRemoteControlPairingType? = nil, clientKey: String? = nil, volumeStatus: LGRemoteControlResponseVolumeStatus? = nil, applications: [LGRemoteControlResponseApplication]? = nil, socketPath: String? = nil) {
         self.pairingType = pairingType
         self.clientKey = clientKey
         self.volumeStatus = volumeStatus
@@ -9,10 +9,10 @@ public struct RemoteControlResponsePayload: Codable {
         self.socketPath = socketPath
     }
     
-    public let pairingType: RemoteControlPairingType?
+    public let pairingType: LGRemoteControlPairingType?
     public let clientKey: String?
-    public let volumeStatus: RemoteControlResponseVolumeStatus?
-    public let applications: [RemoteControlResponseApplication]?
+    public let volumeStatus: LGRemoteControlResponseVolumeStatus?
+    public let applications: [LGRemoteControlResponseApplication]?
     public let socketPath: String?
     
     public enum CodingKeys: String, CodingKey {
@@ -24,7 +24,7 @@ public struct RemoteControlResponsePayload: Codable {
     }
 }
 
-public struct RemoteControlResponseVolumeStatus: Codable {
+public struct LGRemoteControlResponseVolumeStatus: Codable {
     public init(muteStatus: Bool? = nil) {
         self.muteStatus = muteStatus
     }

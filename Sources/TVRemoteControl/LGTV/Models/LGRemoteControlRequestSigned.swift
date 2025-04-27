@@ -1,6 +1,6 @@
 import Foundation
 
-public struct RemoteControlRequestSigned: Codable {
+public struct LGRemoteControlRequestSigned: Codable {
     public init(appId: String = "com.lge.test", created: String = "20140509", localizedAppNames: [String : String] = [
         "": "LG Remote App",
         "ko-KR": "리모컨 앱",

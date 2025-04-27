@@ -1,17 +1,17 @@
 import Foundation
 
-public class LGRemoteControlClient: NSObject, RemoteControlClientProtocol, @unchecked Sendable {
+public class LGRemoteControlClient: NSObject, LGRemoteControlClientProtocol, @unchecked Sendable {
     private var url: URL
     private var urlSession: URLSession?
     private var primaryWebSocketTask: URLSessionWebSocketTask?
     private var secondaryWebSocketTask: URLSessionWebSocketTask?
     private var pointerRequestId: String?
 
-    public weak var delegate: RemoteControlClientDelegate?
+    public weak var delegate: LGRemoteControlClientDelegate?
 
     required public init(
         url: URL,
-        delegate: RemoteControlClientDelegate? = nil
+        delegate: LGRemoteControlClientDelegate? = nil
     ) {
         self.url = url
         self.delegate = delegate
@@ -24,7 +24,7 @@ public class LGRemoteControlClient: NSObject, RemoteControlClientProtocol, @unch
     }
 
     @discardableResult
-    public func makeRequest(_ target: RemoteControlTarget, id: String) -> String? {
+    public func makeRequest(_ target: LGRemoteControlTarget, id: String) -> String? {
         guard let jsonRequest = target.request.jsonWithId(id) else {
             return nil
         }
@@ -38,7 +38,7 @@ public class LGRemoteControlClient: NSObject, RemoteControlClientProtocol, @unch
         sendURLSessionWebSocketTaskMessage(message, task: primaryWebSocketTask)
     }
 
-    public func makeKeyRequest(_ key: RemoteControlKeyTarget) {
+    public func makeKeyRequest(_ key: LGRemoteControlKeyTarget) {
         guard let request = key.request else {
             return
         }
@@ -85,7 +85,7 @@ extension LGRemoteControlClient {
     }
 
     fileprivate func listen(
-        _ completion: @escaping @Sendable (Result<RemoteControlResponse, Error>) -> Void
+        _ completion: @escaping @Sendable (Result<LGRemoteControlResponse, Error>) -> Void
     ) {
         primaryWebSocketTask?.receive { [weak self] result in
             guard let self else {
@@ -100,14 +100,14 @@ extension LGRemoteControlClient {
 
     fileprivate func handle(
         _ response: URLSessionWebSocketTask.Message,
-        completion: @escaping (Result<RemoteControlResponse, Error>) -> Void
+        completion: @escaping (Result<LGRemoteControlResponse, Error>) -> Void
     ) {
         if case .string(let jsonResponse) = response {
             delegate?.didReceive(jsonResponse: jsonResponse)
         }
         guard let response = response.decode(),
             let type = response.type,
-            let responseType = RemoteControlResponseType(rawValue: type)
+            let responseType = LGRemoteControlResponseType(rawValue: type)
         else {
             completion(.failure(NSError(domain: "Unknown error", code: 0, userInfo: nil)))
             return

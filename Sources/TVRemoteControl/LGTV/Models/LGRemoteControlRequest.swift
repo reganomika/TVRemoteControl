@@ -1,16 +1,16 @@
 import Foundation
 
-public struct RemoteControlRequest: Codable {
+public struct LGRemoteControlRequest: Codable {
     public var type: String
     public var id: String?
     public var uri: String?
-    public var payload: RemoteControlRequestPayload?
+    public var payload: LGRemoteControlRequestPayload?
     
     public init(
-        type: RemoteControlRequestType,
+        type: LGRemoteControlRequestType,
         id: String? = nil,
         uri: String? = nil,
-        payload: RemoteControlRequestPayload? = nil
+        payload: LGRemoteControlRequestPayload? = nil
     ) {
         self.type = type.rawValue
         self.id = id

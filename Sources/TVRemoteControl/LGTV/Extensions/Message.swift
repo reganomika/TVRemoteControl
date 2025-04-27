@@ -1,7 +1,7 @@
 import Foundation
 
 extension URLSessionWebSocketTask.Message {
-    func decode() -> RemoteControlResponse? {
+    func decode() -> LGRemoteControlResponse? {
         switch self {
         case .string(let string):
             return try? string.decode()

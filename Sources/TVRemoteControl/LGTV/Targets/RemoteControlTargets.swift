@@ -1,8 +1,8 @@
 import Foundation
 
-public enum RemoteControlTarget {
+public enum LGRemoteControlTarget {
 
-    case registration(pairingType: RemoteControlPairingType = .prompt, key: String? = nil)
+    case registration(pairingType: LGRemoteControlPairingType = .prompt, key: String? = nil)
 
     case pin(_ pin: String)
 
@@ -33,17 +33,17 @@ public enum RemoteControlTarget {
     case channelMinus
 }
 
-public protocol RemoteControlKeyTargetProtocol {
+public protocol LGRemoteControlKeyTargetProtocol {
     var name: String { get }
     var request: Data? { get }
 }
 
-public protocol RemoteControlTargetProtocol {
+public protocol LGRemoteControlTargetProtocol {
     var uri: String? { get }
-    var request: RemoteControlRequest { get }
+    var request: LGRemoteControlRequest { get }
 }
 
-public enum RemoteControlKeyTarget: RemoteControlKeyTargetProtocol {
+public enum LGRemoteControlKeyTarget: LGRemoteControlKeyTargetProtocol {
 
     case move(dx: Int, dy: Int, down: Int = 0)
     
@@ -78,7 +78,7 @@ public enum RemoteControlKeyTarget: RemoteControlKeyTargetProtocol {
     case channelDown
 }
 
-extension RemoteControlTarget: RemoteControlTargetProtocol {
+extension LGRemoteControlTarget: LGRemoteControlTargetProtocol {
     public var uri: String? {
         switch self {
         case .pin:
@@ -114,18 +114,18 @@ extension RemoteControlTarget: RemoteControlTargetProtocol {
         }
     }
 
-    public var request: RemoteControlRequest {
+    public var request: LGRemoteControlRequest {
         switch self {
         case .registration(let pairingType, let clientKey):
-            let payload = RemoteControlRequestPayload(
+            let payload = LGRemoteControlRequestPayload(
                 forcePairing: false,
-                manifest: RemoteControlRequestManifest(),
+                manifest: LGRemoteControlRequestManifest(),
                 pairingType: pairingType.rawValue,
                 clientKey: clientKey
             )
             return .init(type: .register, payload: payload)
         case .pin(let pin):
-            let payload = RemoteControlRequestPayload(pin: pin)
+            let payload = LGRemoteControlRequestPayload(pin: pin)
             return .init(type: .request, uri: uri, payload: payload)
         case .sound(let subscribe):
             if let subscribe {
@@ -133,16 +133,16 @@ extension RemoteControlTarget: RemoteControlTargetProtocol {
             }
             return .init(type: .request, uri: uri)
         case .updateSound(let volume):
-            let payload = RemoteControlRequestPayload(volume: volume)
+            let payload = LGRemoteControlRequestPayload(volume: volume)
             return .init(type: .request, uri: uri, payload: payload)
         case .mute(let mute):
-            let payload = RemoteControlRequestPayload(mute: mute)
+            let payload = LGRemoteControlRequestPayload(mute: mute)
             return .init(type: .request, uri: uri, payload: payload)
         case .launchApp(let appId, let contentId, let params):
-            let payload = RemoteControlRequestPayload(id: appId, contentId: contentId, params: params)
+            let payload = LGRemoteControlRequestPayload(id: appId, contentId: contentId, params: params)
             return .init(type: .request, uri: uri, payload: payload)
         case .closeApp(let appId, let sessionId):
-            let payload = RemoteControlRequestPayload(id: appId, sessionId: sessionId)
+            let payload = LGRemoteControlRequestPayload(id: appId, sessionId: sessionId)
             return .init(type: .request, uri: uri, payload: payload)
         default:
             return .init(type: .request, uri: uri)
@@ -150,7 +150,7 @@ extension RemoteControlTarget: RemoteControlTargetProtocol {
     }
 }
 
-public extension RemoteControlKeyTarget {
+public extension LGRemoteControlKeyTarget {
     var name: String {
         return String(describing: self).uppercased()
     }
